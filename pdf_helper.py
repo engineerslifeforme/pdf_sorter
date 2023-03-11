@@ -12,9 +12,9 @@ def display_pdf(file: Path, location = None, page=0):
     if location is None:
         location = st
     # Opening file from file path
-    pdf = PyPDF2.PdfFileReader(str(file))
-    pdf_writer = PyPDF2.PdfFileWriter()
-    pdf_writer.addPage(pdf.getPage(page))
+    pdf = PyPDF2.PdfReader(str(file))
+    pdf_writer = PyPDF2.PdfWriter()
+    pdf_writer.add_page(pdf.pages[page])
     temp_file = 'temp.pdf'
     with open(temp_file, 'wb') as fh:
         pdf_writer.write(fh)
@@ -46,7 +46,8 @@ def get_text_from_pdf(pdf_path: Path):
         text = ''
         while page < numpages:
             # creating a page object 
-            pageObj = pdfReader.getPage(0) 
+            #pageObj = pdfReader.getPage(0)
+            pageObj = pdfReader.pages[0]
 
             # extracting text from page 
             text += pageObj.extractText()
