@@ -33,11 +33,12 @@ left, right = st.columns((4,1))
 display_pdf(pdf_files[review_index], location=left, page=page_number)
 failed = False
 dates = []
-try:
-    dates = get_dates(chosen_file)
-except:
-    right.warning('Failed to get dates from file')
-    failed = True
+dates = get_dates(chosen_file)
+# try:
+#     dates = get_dates(chosen_file)
+# except:
+#     right.warning('Failed to get dates from file')
+#     failed = True
 if failed or len(dates) == 0:
     dates = [datetime.datetime.today()]
 
@@ -58,3 +59,5 @@ if right.button('Relabel'):
     else:
         shutil.copy2(chosen_file, desination)
         chosen_file.unlink()
+if right.button("Delete"):
+    chosen_file.unlink()

@@ -28,19 +28,22 @@ def display_pdf(file: Path, location = None, page=0):
     location.markdown(pdf_display, unsafe_allow_html=True)
 
 def get_dates(path: Path) -> list:
-    text = get_text_from_pdf(path)
-    raw_dates = datefinder.find_dates(text)
-    return [item for item in raw_dates if item > datetime.datetime(2010, 1, 1) and item.date() < datetime.date.today()]
+    try:
+        return [datetime.datetime.strptime(path.stem.split("_")[1], "%Y%m%d")]
+    except IndexError:
+        text = get_text_from_pdf(path)
+        raw_dates = datefinder.find_dates(text)
+        return [item for item in raw_dates if item > datetime.datetime(2010, 1, 1) and item.date() < datetime.date.today()]
 
 # creating a pdf file object
 def get_text_from_pdf(pdf_path: Path):
     with open(pdf_path, 'rb') as pdfFileObj:
 
         # creating a pdf reader object 
-        pdfReader = PyPDF2.PdfFileReader(pdfFileObj) 
+        pdfReader = PyPDF2.PdfReader(pdfFileObj) 
 
         # printing number of pages in pdf file 
-        numpages = pdfReader.numPages
+        numpages = len(pdfReader.pages)
 
         page = 0
         text = ''
@@ -50,6 +53,6 @@ def get_text_from_pdf(pdf_path: Path):
             pageObj = pdfReader.pages[0]
 
             # extracting text from page 
-            text += pageObj.extractText()
+            text += pageObj.extract_text()
             page += 1
     return text
